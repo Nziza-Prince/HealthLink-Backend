@@ -1,0 +1,6 @@
+# Repository Tests package
+# This directory contains Repository Tests:
+# - PatientRepositoryTest.java
+# - DoctorRepositoryTest.java
+# - ManagerRepositoryTest.java
+# - UserRepositoryTest.java 

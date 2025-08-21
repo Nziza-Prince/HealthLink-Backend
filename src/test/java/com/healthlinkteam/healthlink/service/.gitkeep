@@ -1,0 +1,6 @@
+# Service Tests package
+# This directory contains Service Tests:
+# - PatientServiceTest.java
+# - DoctorServiceTest.java
+# - ManagerServiceTest.java
+# - AuthServiceTest.java 

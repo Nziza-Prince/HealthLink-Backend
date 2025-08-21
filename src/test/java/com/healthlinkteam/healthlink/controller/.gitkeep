@@ -1,0 +1,6 @@
+# Controller Tests package
+# This directory contains Controller Tests:
+# - PatientControllerTest.java
+# - DoctorControllerTest.java
+# - ManagerControllerTest.java
+# - AuthControllerTest.java 
