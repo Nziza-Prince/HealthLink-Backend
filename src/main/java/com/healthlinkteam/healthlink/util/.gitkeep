@@ -1,0 +1,6 @@
+# Util package
+# This directory contains Utility Classes:
+# - DateUtils.java
+# - ValidationUtils.java
+# - FileUtils.java
+# - Constants.java 

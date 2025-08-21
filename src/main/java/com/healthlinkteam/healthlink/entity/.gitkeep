@@ -1,0 +1,14 @@
+# Entity package
+# This directory contains JPA Entities:
+# - User.java (Base user entity)
+# - Patient.java
+# - Doctor.java
+# - Manager.java
+# - Hospital.java
+# - Department.java
+# - Appointment.java
+# - Queue.java
+# - Prescription.java
+# - Payment.java
+# - Wallet.java
+# - Transaction.java 

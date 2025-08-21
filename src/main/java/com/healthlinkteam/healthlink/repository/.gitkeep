@@ -1,0 +1,9 @@
+# Repository package
+# This directory contains Data Access Layer:
+# - PatientRepository.java
+# - DoctorRepository.java
+# - ManagerRepository.java
+# - UserRepository.java
+# - PaymentRepository.java
+# - QueueRepository.java
+# - PrescriptionRepository.java 

@@ -1,0 +1,5 @@
+# Security package
+# This directory contains Security Configuration:
+# - JwtTokenProvider.java
+# - UserDetailsServiceImpl.java
+# - SecurityUtils.java 

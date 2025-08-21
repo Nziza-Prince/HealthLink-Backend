@@ -1,0 +1,6 @@
+# Configuration package
+# This directory contains:
+# - SecurityConfig.java
+# - DatabaseConfig.java
+# - SwaggerConfig.java
+# - CorsConfig.java 

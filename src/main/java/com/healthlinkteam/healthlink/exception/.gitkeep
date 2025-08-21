@@ -1,0 +1,6 @@
+# Exception package
+# This directory contains Custom Exceptions:
+# - ResourceNotFoundException.java
+# - ValidationException.java
+# - AuthenticationException.java
+# - PaymentException.java 

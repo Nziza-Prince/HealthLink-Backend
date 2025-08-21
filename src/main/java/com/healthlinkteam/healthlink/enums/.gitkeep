@@ -1,0 +1,7 @@
+# Enums package
+# This directory contains Enumeration Classes:
+# - UserRole.java (PATIENT, DOCTOR, MANAGER)
+# - AppointmentStatus.java
+# - PaymentStatus.java
+# - PrescriptionStatus.java
+# - QueueStatus.java 

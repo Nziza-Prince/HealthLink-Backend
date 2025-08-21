@@ -1,0 +1,9 @@
+# DTO package
+# This directory contains Data Transfer Objects:
+# - PatientDto.java
+# - DoctorDto.java
+# - LoginDto.java
+# - SignupDto.java
+# - AppointmentDto.java
+# - PrescriptionDto.java
+# - PaymentDto.java 

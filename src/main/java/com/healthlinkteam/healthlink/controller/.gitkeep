@@ -1,0 +1,9 @@
+# Controller package
+# This directory contains REST Controllers:
+# - PatientController.java
+# - DoctorController.java
+# - ManagerController.java
+# - AuthController.java
+# - PaymentController.java
+# - QueueController.java
+# - PrescriptionController.java 

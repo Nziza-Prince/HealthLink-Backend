@@ -1,0 +1,10 @@
+# Service package
+# This directory contains Business Logic Layer:
+# - PatientService.java
+# - DoctorService.java
+# - ManagerService.java
+# - AuthService.java
+# - PaymentService.java
+# - QueueService.java
+# - PrescriptionService.java
+# - NotificationService.java 
