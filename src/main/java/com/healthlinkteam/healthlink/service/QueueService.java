@@ -64,6 +64,6 @@ public class QueueService {
     }
 
     public Prescription createPrescription(Prescription prescription) {
-        return prescriptionRepository.
+        return prescriptionRepository.save(prescription);
     }
 }

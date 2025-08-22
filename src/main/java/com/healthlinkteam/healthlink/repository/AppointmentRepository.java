@@ -17,7 +17,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     /**
      * Find appointments by doctor ID
      */
-    @Query("SELECT a FROM Appointment a ORDER BY a.createdAt LIMIT 3")
+    @Query("SELECT a FROM Appointment a ORDER BY a.createdAt DESC LIMIT 3")
     List<Appointment> findByDoctorIdByThree(UUID doctorId);
 
     /**
