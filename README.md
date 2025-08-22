@@ -109,3 +109,122 @@ If you encounter connection issues:
 2. Check if PostgreSQL container is healthy: `docker-compose ps`
 3. Verify the database is accessible: `docker-compose logs postgres`
 4. Check if port 5432 is available on your system 
+
+
+## 📱 Complete API Endpoints
+
+### **Authentication Endpoints:**
+- `POST /api/auth/patient/signup` - Patient registration
+- `POST /api/auth/login` - User login (returns JWT token)
+- `POST /api/auth/refresh` - Refresh JWT token
+- `POST /api/auth/logout` - User logout
+
+### **Development/Testing Endpoints (with patientId parameter):**
+- `GET /api/patient/overview?patientId={id}` - Patient dashboard
+- `GET /api/patient/appointments?patientId={id}` - Patient appointments
+- `POST /api/patient/appointments` - Create appointment (JSON body with patientId)
+- `GET /api/patient/prescriptions?patientId={id}` - Patient prescriptions
+- `GET /api/patient/wallet?patientId={id}` - Patient wallet
+- `POST /api/patient/wallet/topup` - Top up wallet (JSON body with patientId)
+- `GET /api/patient/payments?patientId={id}` - Patient payments
+- `GET /api/patient/transactions?patientId={id}` - Patient transactions
+- `GET /api/patient/profile?patientId={id}` - Patient profile
+- `GET /api/patient/departments` - Get all departments for dropdown
+
+### **Authenticated Endpoints (with JWT token - /me endpoints):**
+- `GET /api/patient/overview/me` - Current user's dashboard
+- `GET /api/patient/appointments/me` - Current user's appointments
+- `POST /api/patient/appointments/me` - Create appointment for current user
+- `GET /api/patient/prescriptions/me` - Current user's prescriptions
+- `GET /api/patient/wallet/me` - Current user's wallet
+- `POST /api/patient/wallet/topup/me` - Top up current user's wallet
+- `GET /api/patient/payments/me` - Current user's payments
+- `GET /api/patient/transactions/me` - Current user's transactions
+- `GET /api/patient/profile/me` - Current user's profile
+
+### **Test Endpoint:**
+- `GET /api/patient/test` - Test API connectivity
+
+## 🔐 **JWT Authentication Usage:**
+
+### **1. Login to get JWT token:**
+```bash
+POST /api/auth/login
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+### **2. Use JWT token in authenticated requests:**
+```bash
+GET /api/patient/overview/me
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+### **3. For development/testing (without JWT):**
+```bash
+GET /api/patient/overview?patientId=uuid-here
+```
+
+## 🧪 **Test Data for JSON-based POST APIs**
+
+### **Create Appointment (with patientId):**
+```bash
+POST /api/patient/appointments
+Content-Type: application/json
+
+{
+  "patientId": "550e8400-e29b-41d4-a716-446655440000",
+  "departmentName": "Cardiology",
+  "reason": "Chest pain and difficulty breathing",
+  "preferredDate": "2024-08-25"
+}
+```
+
+### **Create Appointment (authenticated - /me):**
+```bash
+POST /api/patient/appointments/me
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "departmentName": "Cardiology",
+  "reason": "Severe stomach pain",
+  "preferredDate": "2024-08-25"
+}
+```
+
+### **Top Up Wallet (with patientId):**
+```bash
+POST /api/patient/wallet/topup
+Content-Type: application/json
+
+{
+  "patientId": "550e8400-e29b-41d4-a716-446655440000",
+  "amount": "50000",
+  "paymentMethod": "MTN_MOBILE_MONEY"
+}
+```
+
+### **Top Up Wallet (authenticated - /me):**
+```bash
+POST /api/patient/wallet/topup/me
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "amount": "50000",
+  "paymentMethod": "MTN_MOBILE_MONEY"
+}
+```
+
+### **Get Available Departments (for frontend dropdown):**
+```bash
+GET /api/patient/departments
+```
+
+**Response includes:**
+- Cardiology, Orthopedics, Pediatrics, General Medicine, Emergency Medicine
+- Each with unique UUID, name, description, and hospital info
+- **Frontend Usage**: Use department names in appointment requests, not UUIDs
