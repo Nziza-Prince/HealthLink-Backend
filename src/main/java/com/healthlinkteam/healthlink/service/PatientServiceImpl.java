@@ -3,6 +3,7 @@ package com.healthlinkteam.healthlink.service;
 import com.healthlinkteam.healthlink.dto.PatientOverviewDto;
 import com.healthlinkteam.healthlink.dto.PatientSignupDto;
 import com.healthlinkteam.healthlink.dto.WalletDto;
+import com.healthlinkteam.healthlink.dto.PatientProfileDto;
 import com.healthlinkteam.healthlink.entity.*;
 import com.healthlinkteam.healthlink.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -263,7 +264,9 @@ public class PatientServiceImpl implements PatientService {
         try {
             Optional<Patient> patientOpt = patientRepository.findById(patientId);
             if (patientOpt.isPresent()) {
-                return ResponseEntity.ok(patientOpt.get());
+                Patient patient = patientOpt.get();
+                PatientProfileDto profileDto = convertToPatientProfileDto(patient);
+                return ResponseEntity.ok(profileDto);
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -294,6 +297,36 @@ public class PatientServiceImpl implements PatientService {
             log.error("Error updating patient profile: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile");
         }
+    }
+
+    // Conversion methods
+    private PatientProfileDto convertToPatientProfileDto(Patient patient) {
+        PatientProfileDto dto = new PatientProfileDto();
+        dto.setId(patient.getId());
+        dto.setEmail(patient.getEmail());
+        dto.setFirstName(patient.getFirstName());
+        dto.setLastName(patient.getLastName());
+        dto.setDateOfBirth(patient.getDateOfBirth());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setEmergencyContactName(patient.getEmergencyContactName());
+        dto.setEmergencyContactPhone(patient.getEmergencyContactPhone());
+        dto.setPhoneNumber(patient.getPhoneNumber());
+        dto.setCountryOfResidence(patient.getCountryOfResidence());
+        dto.setActive(patient.getIsActive());
+        dto.setCreatedAt(patient.getCreatedAt());
+        dto.setUpdatedAt(patient.getUpdatedAt());
+        
+        // Add wallet info if available
+        Optional<Wallet> walletOpt = walletRepository.findByPatientId(patient.getId());
+        if (walletOpt.isPresent()) {
+            Wallet wallet = walletOpt.get();
+            dto.setWalletId(wallet.getId());
+            dto.setWalletBalance(wallet.getBalance().toString());
+            dto.setWalletCurrency(wallet.getCurrency());
+        }
+        
+        return dto;
     }
 
     // Helper methods for overview
