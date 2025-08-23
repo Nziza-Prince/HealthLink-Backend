@@ -1,6 +1,7 @@
 package com.healthlinkteam.healthlink.repository;
 
 import com.healthlinkteam.healthlink.entity.Appointment;
+import com.healthlinkteam.healthlink.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -40,4 +41,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> searchPatients(Long doctorId, String keyword);
 
     long countByDoctorIdAndServiceDate(UUID doctorId, LocalDate serviceDate);
+
+    List<Appointment> findAppointmentByDoctorEmailAndStatus(String email, AppointmentStatus status);
+
+    long countAppointmentByStatusAndDoctorEmail(AppointmentStatus status, String email);
+
+    long countAppointmentByStatusAndDoctorEmailAndServiceDate(AppointmentStatus status, String email, LocalDate serviceDate);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.email = :email AND a.status = :status HAVING COUNT(*) = 1")
+    long countUniqueAppointmentByDoctorEmailAndStatus(String email,  AppointmentStatus status);
+
+    List<Appointment> findAppointmentByStatusAndDoctorEmail(AppointmentStatus status, String email);
+
+    List<Appointment> findAppointmentByReferedDoctorEmailAndStatus(AppointmentStatus status, String email);
+
+
+
 }

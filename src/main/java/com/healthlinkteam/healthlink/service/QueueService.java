@@ -34,10 +34,20 @@ public class QueueService {
         return appointmentRepository.countByDoctorIdAndServiceDate(doctorId, date);
     }
 
-    public boolean updateAppointmentStatus(UUID appointmentId) {
+    public boolean updateAppointmentStatusToConsultation(UUID appointmentId) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
         if (appointment.isPresent()) {
             appointment.get().setStatus(AppointmentStatus.IN_CONSULTATION);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean updateAppointmentStatusToReferral(UUID appointmentId) {
+        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
+        if (appointment.isPresent()) {
+            appointment.get().setStatus(AppointmentStatus.REFERRED);
             return true;
         } else {
             return false;

@@ -95,7 +95,14 @@ public class DoctorController {
     public ResponseEntity<?> addConsultation(
             @PathVariable UUID appointmentId
     ) {
-        return ResponseEntity.ok(queueService.updateAppointmentStatus(appointmentId));
+        return ResponseEntity.ok(queueService.updateAppointmentStatusToConsultation(appointmentId));
+    }
+
+    @PatchMapping("/queue/add-referral/{appointmentId}")
+    public ResponseEntity<?> addReferral(
+            @PathVariable UUID appointmentId
+    ) {
+        return ResponseEntity.ok(queueService.updateAppointmentStatusToReferral(appointmentId));
     }
 
     @GetMapping("/chart/{appointmentId}")
@@ -275,6 +282,190 @@ public class DoctorController {
             }
 
             return ResponseEntity.ok(doctorService.getAllPaymentPerMonth(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/consultations")
+    public ResponseEntity<?> getConsultations(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getAllConsultations(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/consultations/get-total")
+    public ResponseEntity<?> getConsultationTotal(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getTotalConsultation(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/consultations/get_byMonth")
+    public ResponseEntity<?> getConsultationByMonth(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getTotalConsultationByMonth(email, LocalDate.now().minusMonths(1)));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/consultations/get-unique")
+    public ResponseEntity<?> getConsultationUnique(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getUniquePatients(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/referrals/out-going")
+    public ResponseEntity<?> getOutgoingReferrals(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getOutGoingReferrals(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @GetMapping("/referrals/in-coming")
+    public ResponseEntity<?> getInComingReferrals(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.getInComingReferrals(email));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
+
+    @PatchMapping("/referrals/add-referral/{appointmentId}/{referedDoctorId}")
+    public ResponseEntity<?> addReferral(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable UUID appointmentId,
+            @PathVariable UUID referedDoctorId
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header required");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        try {
+            // Extract email from JWT token
+            String email = jwtUtil.extractUsername(token);
+
+            // Look up doctor by email
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+            if (doctorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
+            }
+
+            return ResponseEntity.ok(doctorService.addReferral(appointmentId, referedDoctorId));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");

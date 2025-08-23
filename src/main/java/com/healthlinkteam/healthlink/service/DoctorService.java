@@ -144,4 +144,43 @@ public class DoctorService {
         return paymentRepository.findAmountPerMonthByDoctorEmail(email);
     }
 
+    public List<Appointment> getAllConsultations(String email) {
+        return appointmentRepository.findAppointmentByDoctorEmailAndStatus(email, AppointmentStatus.IN_CONSULTATION);
+    }
+
+    public long getTotalConsultation(String email) {
+        return appointmentRepository.countAppointmentByStatusAndDoctorEmail(AppointmentStatus.IN_CONSULTATION,  email);
+    }
+
+    public long getTotalConsultationByMonth(String email, LocalDate date) {
+        return appointmentRepository.countAppointmentByStatusAndDoctorEmailAndServiceDate(AppointmentStatus.IN_CONSULTATION, email, date);
+    }
+
+    public long getUniquePatients(String email) {
+        return appointmentRepository.countUniqueAppointmentByDoctorEmailAndStatus(email, AppointmentStatus.IN_CONSULTATION);
+    }
+
+    public List<Appointment> getOutGoingReferrals(String email) {
+        return appointmentRepository.findAppointmentByStatusAndDoctorEmail(AppointmentStatus.REFERRED, email);
+    }
+
+    public List<Appointment> getInComingReferrals(String email) {
+        return appointmentRepository.findAppointmentByReferedDoctorEmailAndStatus(AppointmentStatus.REFERRED, email);
+    }
+
+    public boolean addReferral(UUID appointmentId, UUID doctorId) {
+        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
+        Optional<Doctor> referedDoctor = doctorRepository.findById(doctorId);
+        if(referedDoctor.isEmpty()) {
+            throw new RuntimeException("Patient not found");
+        }
+        if (appointment.isPresent()) {
+            appointment.get().setStatus(AppointmentStatus.REFERRED);
+            appointment.get().setReferedDoctor(referedDoctor.get());
+            return true;
+        } else {
+            throw new RuntimeException("Appointment not found");
+        }
+    }
+
 }
