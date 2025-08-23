@@ -1,22 +1,39 @@
 package com.healthlinkteam.healthlink.entity;
 
+import com.healthlinkteam.healthlink.dto.CreateAppointmentDto;
+import com.healthlinkteam.healthlink.enums.MedicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Table(name = "medications")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Medication {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private int stockLevel;
-    private String supplier;
+
+    @ManyToOne
+    @JoinColumn(name = "visit_request_id")
+    private CreateAppointmentDto visitRequest;
+
+    private String medicationName;
+    private String dosage;
+    private String duration;
+    private String frequency;
+    private String specificInstructions;
+
     @Enumerated(EnumType.STRING)
-    private InventoryStatus status;
-    private LocalDate lastRestocked;
+    private MedicationStatus status = MedicationStatus.PRESCRIBED;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

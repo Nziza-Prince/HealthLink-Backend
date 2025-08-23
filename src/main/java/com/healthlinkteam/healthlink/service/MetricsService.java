@@ -1,5 +1,12 @@
 package com.healthlinkteam.healthlink.service;
 
+import com.healthlinkteam.healthlink.enums.StockStatus;
+import com.healthlinkteam.healthlink.repository.DoctorRepository;
+import com.healthlinkteam.healthlink.repository.FacilityRepository;
+import com.healthlinkteam.healthlink.repository.MedicationRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
 public class MetricsService {
@@ -20,10 +27,10 @@ public class MetricsService {
 
     public PharmacySummary pharmacySummary() {
         return new PharmacySummary(
-                medicationRepo.countByStatus(InventoryStatus.IN_STOCK),
-                medicationRepo.countByStatus(InventoryStatus.PENDING),
-                medicationRepo.countByStatus(InventoryStatus.LOW_STOCK),
-                medicationRepo.countByStatus(InventoryStatus.COLLECTED)
+                medicationRepo.countByStatus(StockStatus.IN_STOCK),
+                medicationRepo.countByStatus(StockStatus.PENDING),
+                medicationRepo.countByStatus(StockStatus.LOW_STOCK),
+                medicationRepo.countByStatus(StockStatus.COLLECTED)
         );
     }
 }

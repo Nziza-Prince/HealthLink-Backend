@@ -2,6 +2,8 @@ package com.healthlinkteam.healthlink.service;
 
 import com.healthlinkteam.healthlink.entity.Medication;
 import com.healthlinkteam.healthlink.repository.MedicationRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;

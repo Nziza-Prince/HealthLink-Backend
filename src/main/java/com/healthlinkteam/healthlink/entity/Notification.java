@@ -1,21 +1,38 @@
 package com.healthlinkteam.healthlink.entity;
 
+import com.healthlinkteam.healthlink.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-
 @Entity
-@Getter
-@Setter
+@Table(name = "notifications")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Notification {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String category; // Transactions | Delayed appointments | Overdue payments | etc
-    private String message;
-    private boolean readFlag;
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_id")
+    private User recipient;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
+
+    private String description;
+    private Boolean isRead = false;
+
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
