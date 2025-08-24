@@ -3,6 +3,7 @@ package com.healthlinkteam.healthlink.service;
 import com.healthlinkteam.healthlink.entity.Doctor;
 import com.healthlinkteam.healthlink.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +23,17 @@ public class StaffService {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Doctor not found"));
     }
 
-    public Doctor create(Doctor d) {
-        return repo.save(d);
+    public Doctor create(Doctor dto) {
+        Doctor doctor = new Doctor();
+        doctor.setFirstName(dto.getFirstName());
+        doctor.setLastName(dto.getLastName());
+        doctor.setEmail(dto.getEmail());
+        doctor.setDepartment(dto.getDepartment());
+        doctor.setRole(dto.getRole());
+        doctor.setIsAvailable(dto.getIsAvailable());
+        doctor.setPasswordHash(new BCryptPasswordEncoder().encode(dto.getPasswordHash()));
+        return repo.save(doctor);
+
     }
 
     public Doctor update(UUID id, Doctor d) {
