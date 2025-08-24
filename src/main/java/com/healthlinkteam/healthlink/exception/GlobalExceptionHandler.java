@@ -1,51 +1,58 @@
 package com.healthlinkteam.healthlink.exception;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+
+import java.time.Instant;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<com.healthlinkteam.healthlink.exception.ErrorResponse> handleEntityNotFound(EntityNotFoundException ex,
+                                                                                                      HttpServletRequest request) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex,
+                                                          HttpServletRequest request) {
+        String errorMessage = ex.getBindingResult().getAllErrors().stream()
+                .findFirst()
+                .map(objectError -> objectError.getDefaultMessage())
+                .orElse("Validation error");
+
+        return buildResponse(HttpStatus.BAD_REQUEST, errorMessage, request.getRequestURI());
+    }
+
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException ex,
+                                                       HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex,
+                                                       HttpServletRequest request) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred",
-                System.currentTimeMillis()
+                request.getRequestURI());
+    }
+
+    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, String path) {
+        ErrorResponse error = new ErrorResponse(
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                path,
+                Instant.now().toEpochMilli()
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(status).body(error);
     }
-}
-
-class ErrorResponse {
-    private int status;
-    private String message;
-    private long timestamp;
-
-    public ErrorResponse(int status, String message, long timestamp) {
-        this.status = status;
-        this.message = message;
-        this.timestamp = timestamp;
-    }
-
-    // Getters and setters
-    public int getStatus() { return status; }
-    public void setStatus(int status) { this.status = status; }
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
 }
