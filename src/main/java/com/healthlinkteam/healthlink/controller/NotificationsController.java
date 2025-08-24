@@ -1,45 +1,47 @@
 package com.healthlinkteam.healthlink.controller;
 
-import com.healthlinkteam.healthlink.repository.NotificationRepository;
+import com.healthlinkteam.healthlink.dto.SendNotificationDTO;
+import com.healthlinkteam.healthlink.entity.Notification;
+import com.healthlinkteam.healthlink.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
+
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/notifications")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class NotificationsController {
-    private final NotificationRepository repo;
 
+    private final NotificationService notificationService;
 
-    @GetMapping
-    public List<Notification> all() { return repo.findAll(); }
-
-
-    @PostMapping
-    public Notification create(@RequestBody Notification n) {
-        n.setCreatedAt(LocalDateTime.now());
-        n.setReadFlag(false);
-        return repo.save(n);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable UUID userId) {
+        return ResponseEntity.ok(notificationService.getUserNotifications(userId));
     }
 
+    @GetMapping("/user/{userId}/unread")
+    public ResponseEntity<List<Notification>> getUnreadNotifications(@PathVariable UUID userId) {
+        return ResponseEntity.ok(notificationService.getUnreadUserNotifications(userId));
+    }
 
-    @GetMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter stream() {
-        SseEmitter emitter = new SseEmitter(Duration.ofMinutes(30).toMillis());
-        new Thread(() -> {
-            try {
-// Initial ping
-                emitter.send(SseEmitter.event().name("ping").data("connected"));
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-            }
-        }).start();
-        return emitter;
+    @PostMapping("/send")
+    public ResponseEntity<String> sendNotification(@RequestBody SendNotificationDTO sendDTO) {
+        notificationService.sendNotification(sendDTO);
+        return ResponseEntity.ok("Notification sent successfully");
+    }
+
+    @PostMapping("/{id}/mark-read")
+    public ResponseEntity<String> markAsRead(@PathVariable UUID id) {
+        notificationService.markAsRead(id);
+        return ResponseEntity.ok("Notification marked as read");
+    }
+
+    @GetMapping("/overdue-payments")
+    public ResponseEntity<List<Notification>> getOverduePaymentNotifications() {
+        return ResponseEntity.ok(notificationService.getOverduePaymentNotifications());
     }
 }

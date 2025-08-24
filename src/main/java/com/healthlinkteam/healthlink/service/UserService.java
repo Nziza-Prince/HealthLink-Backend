@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,22 +33,23 @@ public class UserService {
         user.setFirstName(createUserDTO.getFirstName());
         user.setLastName(createUserDTO.getLastName());
         user.setEmail(createUserDTO.getEmail());
-        user.setPhoneNo(createUserDTO.getPhoneNo());
+        user.setPhoneNumber(createUserDTO.getPhoneNo());
         user.setRole(createUserDTO.getRole());
         user.setDepartment(createUserDTO.getDepartment());
+        user.setPasswordHash(createUserDTO.getPasswordHash());
 
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
     }
 
-    public UserDTO updateUser(Long id, CreateUserDTO updateUserDTO) {
+    public UserDTO updateUser(UUID id, CreateUserDTO updateUserDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setFirstName(updateUserDTO.getFirstName());
         user.setLastName(updateUserDTO.getLastName());
         user.setEmail(updateUserDTO.getEmail());
-        user.setPhoneNo(updateUserDTO.getPhoneNo());
+        user.setPhoneNumber(updateUserDTO.getPhoneNo());
         user.setRole(updateUserDTO.getRole());
         user.setDepartment(updateUserDTO.getDepartment());
 
@@ -55,7 +57,7 @@ public class UserService {
         return convertToDTO(savedUser);
     }
 
-    public void deactivateUser(Long id) {
+    public void deactivateUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setIsActive(false);
@@ -75,7 +77,7 @@ public class UserService {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
-        dto.setPhoneNo(user.getPhoneNo());
+        dto.setPhoneNo(user.getPhoneNumber());
         dto.setRole(user.getRole());
         dto.setDepartment(user.getDepartment());
         dto.setJoinedDate(user.getJoinedDate());

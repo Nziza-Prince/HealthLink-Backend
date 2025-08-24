@@ -7,10 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface MedicalInventoryRepository extends JpaRepository<MedicalInventory, Long> {
+public interface MedicalInventoryRepository extends JpaRepository<MedicalInventory, UUID> {
+
     List<MedicalInventory> findByStatus(StockStatus status);
+
     List<MedicalInventory> findByMedicineNameContainingIgnoreCase(String name);
 
     @Query("SELECT COUNT(m) FROM MedicalInventory m WHERE m.status = 'IN_STOCK'")

@@ -1,9 +1,6 @@
 package com.healthlinkteam.healthlink.entity;
 
-import com.healthlinkteam.healthlink.entity.embedded.ResetToken;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -31,13 +28,11 @@ public class Doctor extends User{
     @Column(name = "gender")
     private String gender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @Column(name = "department")
+    private String department;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
+    @Column(name = "hospital")
+    private String hospital;
 
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable = true;

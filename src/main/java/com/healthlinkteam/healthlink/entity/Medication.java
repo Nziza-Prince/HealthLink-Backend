@@ -1,11 +1,10 @@
 package com.healthlinkteam.healthlink.entity;
 
-import com.healthlinkteam.healthlink.dto.CreateAppointmentDto;
 import com.healthlinkteam.healthlink.enums.MedicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "medications")
@@ -13,15 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Medication {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "visit_request_id")
-    private CreateAppointmentDto visitRequest;
+    @Column(name = "appointment_id", nullable = false)
+    private UUID appointmentId;
 
+    @Column(nullable = false)
     private String medicationName;
+
     private String dosage;
     private String duration;
     private String frequency;

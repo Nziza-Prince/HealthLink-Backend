@@ -1,5 +1,5 @@
 package com.healthlinkteam.healthlink.enums;
 
 public enum TransactionType {
-    REVENUE, EXPENSE
+    TOP_UP, PAYMENT, REFUND, REVENUE, EXPENSE
 }

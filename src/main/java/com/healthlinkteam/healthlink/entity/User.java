@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,6 +22,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -41,6 +48,15 @@ public class User {
     @Column(name = "country_of_residence")
     private String countryOfResidence;
 
+    @Column(name = "joined_date")
+    private LocalDate joinedDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name = "department")
+    private String department;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -53,6 +69,9 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (joinedDate == null) {
+            joinedDate = LocalDate.now();
+        }
     }
 
     @PreUpdate

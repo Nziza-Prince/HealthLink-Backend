@@ -1,19 +1,18 @@
 package com.healthlinkteam.healthlink.repository;
 
 import com.healthlinkteam.healthlink.entity.User;
+import com.healthlinkteam.healthlink.enums.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.management.relation.Role;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    List<User> findByRole(Role role);
+public interface UserRepository extends JpaRepository<User, UUID> {
+    List<User> findByRole(UserRole role);
     List<User> findByIsActiveTrue();
-    List<User> findByRoleAndIsActiveTrue(Role role);
+    List<User> findByRoleAndIsActiveTrue(UserRole role);
     List<User> findByDepartment(String department);
     User findByEmail(String email);
 }

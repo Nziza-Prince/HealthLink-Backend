@@ -1,5 +1,6 @@
 package com.healthlinkteam.healthlink.entity;
 
+import com.healthlinkteam.healthlink.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,18 +26,15 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    @ToString.Exclude
-    private Patient patient;
+    @Column(name = "patient_id", nullable = false)
+    private UUID patientId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    @ToString.Exclude
-    private Payment payment;
+    @Column(name = "payment_id")
+    private UUID paymentId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private String type; // TOP_UP, PAYMENT, REFUND
+    private TransactionType type;
 
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;

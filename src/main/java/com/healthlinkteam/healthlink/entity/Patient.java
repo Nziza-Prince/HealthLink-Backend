@@ -38,8 +38,8 @@ public class Patient extends User {
     @Column(name = "emergency_contact_phone")
     private String emergencyContactPhone;
 
-    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Wallet wallet;
+    @Column(name = "wallet_id")
+    private UUID walletId;
 
     public Patient() {
         setRole(com.healthlinkteam.healthlink.enums.UserRole.PATIENT);

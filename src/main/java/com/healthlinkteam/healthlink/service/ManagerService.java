@@ -8,7 +8,7 @@ import com.healthlinkteam.healthlink.enums.UserRole;
 import com.healthlinkteam.healthlink.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,13 +19,13 @@ public class ManagerService {
     private UserRepository userRepository;
 
     @Autowired
-    private AppointmentRepository visitRequestRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     private MedicalInventoryRepository inventoryRepository;
 
     @Autowired
-    private PaymentRepository financialRepository;
+    private PaymentRepository paymentRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -36,16 +36,16 @@ public class ManagerService {
     // Overview Statistics
     public OverviewStatsDTO getOverviewStats() {
         OverviewStatsDTO stats = new OverviewStatsDTO();
-        stats.setTotalVisitRequests(visitRequestRepository.countTotalVisitRequests());
+        stats.setTotalVisitRequests(appointmentRepository.countTotalAppointments()); // ✅ fixed
         stats.setTotalStaff((long) userRepository.findByIsActiveTrue().size());
         stats.setTotalMedicalInventory((long) inventoryRepository.findAll().size());
-        stats.setTotalFacilities(10L); // Assuming static value
+        stats.setTotalFacilities(10L); // static example
 
-        Double revenue = financialRepository.getTotalRevenue();
-        Double expenses = financialRepository.getTotalExpenses();
+        Double revenue = paymentRepository.getTotalRevenue();
+        Double expenses = paymentRepository.getTotalExpenses();
         stats.setTotalRevenue(revenue != null ? revenue : 0.0);
         stats.setTotalExpenses(expenses != null ? expenses : 0.0);
-        stats.setTotalProfit((stats.getTotalRevenue() - stats.getTotalExpenses()));
+        stats.setTotalProfit(stats.getTotalRevenue() - stats.getTotalExpenses());
 
         return stats;
     }
@@ -53,7 +53,7 @@ public class ManagerService {
     // Queue Statistics
     public QueueStatsDTO getQueueStats() {
         QueueStatsDTO stats = new QueueStatsDTO();
-        stats.setTotalVisitRequests(visitRequestRepository.countTotalVisitRequests());
+        stats.setTotalVisitRequests(appointmentRepository.countTotalAppointments()); // ✅ fixed
         stats.setAvailableDoctors((long) userRepository.findByRoleAndIsActiveTrue(UserRole.DOCTOR).size());
         stats.setTotalMedicalInventory((long) inventoryRepository.findAll().size());
         stats.setTotalFacilities(10L);

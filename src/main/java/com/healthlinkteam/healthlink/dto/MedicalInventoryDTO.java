@@ -4,10 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class MedicalInventoryDTO {
-    private Long id;
+    private UUID id;
     private String medicineName;
     private String category;
     private Integer stockQuantity;
@@ -18,4 +19,3 @@ public class MedicalInventoryDTO {
     private String status;
     private LocalDateTime lastRestocked;
 }
-

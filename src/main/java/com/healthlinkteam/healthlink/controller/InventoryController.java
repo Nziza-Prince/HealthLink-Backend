@@ -1,35 +1,54 @@
 package com.healthlinkteam.healthlink.controller;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
+import com.healthlinkteam.healthlink.dto.CreateMedicalInventoryDTO;
+import com.healthlinkteam.healthlink.dto.MedicalInventoryDTO;
+import com.healthlinkteam.healthlink.service.InventoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.net.URI;
 import java.util.List;
-
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/inventory")
-@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class InventoryController {
-    private final InventoryService inventory;
 
+    @Autowired
+    private InventoryService inventoryService;
 
     @GetMapping
-    public List<InventoryCardDTO> all() { return inventory.all().stream().map(DtoMappers::toDto).toList(); }
-
-
-    @GetMapping("/{id}")
-    public InventoryCardDTO get(@PathVariable Long id) { return DtoMappers.toDto(inventory.get(id)); }
-
+    public ResponseEntity<List<MedicalInventoryDTO>> getAllInventory() {
+        return ResponseEntity.ok(inventoryService.getAllInventory());
+    }
 
     @PostMapping
-    public InventoryCardDTO create(@Valid @RequestBody Medication m) { return DtoMappers.toDto(inventory.create(m)); }
-
+    public ResponseEntity<MedicalInventoryDTO> addMedication(@RequestBody CreateMedicalInventoryDTO createDTO) {
+        MedicalInventoryDTO saved = inventoryService.addMedication(createDTO);
+        return ResponseEntity.created(URI.create("/api/inventory/" + saved.getId())).body(saved);
+    }
 
     @PutMapping("/{id}")
-    public InventoryCardDTO update(@PathVariable Long id, @Valid @RequestBody Medication m) { return DtoMappers.toDto(inventory.update(id, m)); }
-
+    public ResponseEntity<MedicalInventoryDTO> updateInventory(@PathVariable UUID id,
+                                                               @RequestBody CreateMedicalInventoryDTO updateDTO) {
+        return ResponseEntity.ok(inventoryService.updateInventory(id, updateDTO));
+    }
 
     @PostMapping("/{id}/reorder")
-    public InventoryCardDTO reorder(@PathVariable Long id, @RequestParam(defaultValue = "10") int qty) { return DtoMappers.toDto(inventory.reorder(id, qty)); }
+    public ResponseEntity<String> reorderMedication(@PathVariable UUID id) {
+        inventoryService.reorderMedication(id);
+        return ResponseEntity.ok("Reorder initiated successfully");
+    }
+
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<MedicalInventoryDTO>> getLowStockItems() {
+        return ResponseEntity.ok(inventoryService.getLowStockItems());
+    }
+
+    @GetMapping("/by-status/{status}")
+    public ResponseEntity<List<MedicalInventoryDTO>> getInventoryByStatus(@PathVariable String status) {
+        return ResponseEntity.ok(inventoryService.getInventoryByStatus(status));
+    }
 }

@@ -24,9 +24,8 @@ public class Department {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospital;
+    @Column(name = "hospital", nullable = false)
+    private String hospital;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

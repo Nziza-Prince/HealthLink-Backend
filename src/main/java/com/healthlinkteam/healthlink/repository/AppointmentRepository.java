@@ -1,8 +1,6 @@
 package com.healthlinkteam.healthlink.repository;
 
-import com.healthlinkteam.healthlink.dto.CreateAppointmentDto;
 import com.healthlinkteam.healthlink.entity.Appointment;
-import com.healthlinkteam.healthlink.entity.User;
 import com.healthlinkteam.healthlink.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,19 +8,20 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    List<CreateAppointmentDto> findByStatus(AppointmentStatus status);
-    List<CreateAppointmentDto> findByAssignedDoctor(User doctor);
-    List<CreateAppointmentDto> findByServiceDateBetween(LocalDateTime start, LocalDateTime end);
+public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
+    List<Appointment> findByStatus(AppointmentStatus status);
+    List<Appointment> findByDoctorId(UUID doctorId);
+    List<Appointment> findByAppointmentDateBetween(LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT COUNT(v) FROM CreateAppointmentDto v")
-    Long countTotalVisitRequests();
+    @Query("SELECT COUNT(a) FROM Appointment a")
+    Long countTotalAppointments();
 
-    @Query("SELECT COUNT(v) FROM CreateAppointmentDto v WHERE v.status = 'UNASSIGNED'")
-    Long countUnassignedRequests();
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.status = 'UNASSIGNED'")
+    Long countUnassignedAppointments();
 
-    @Query("SELECT v FROM CreateAppointmentDto v WHERE v.serviceDate < :now AND v.status != 'COMPLETED'")
-    List<CreateAppointmentDto> findDelayedAppointments(LocalDateTime now);
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate < :now AND a.status != 'COMPLETED'")
+    List<Appointment> findDelayedAppointments(LocalDateTime now);
 }

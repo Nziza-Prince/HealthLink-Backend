@@ -26,10 +26,8 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    @ToString.Exclude
-    private Patient patient;
+    @Column(name = "patient_id", nullable = false)
+    private UUID patientId;
 
     @Column(name = "balance", nullable = false, precision = 10, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;

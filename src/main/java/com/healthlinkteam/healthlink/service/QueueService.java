@@ -1,6 +1,6 @@
 package com.healthlinkteam.healthlink.service;
 
-import com.healthlinkteam.healthlink.dto.AssignDoctorDTO;
+import com.healthlinkteam.healthlink.dto.AssignAppointmentDTO;
 import com.healthlinkteam.healthlink.dto.CreateAppointmentDto;
 import com.healthlinkteam.healthlink.entity.Appointment;
 import com.healthlinkteam.healthlink.entity.User;
@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class QueueService {
 
     @Autowired
-    private AppointmentRepository visitRequestRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -28,51 +29,49 @@ public class QueueService {
     private NotificationService notificationService;
 
     public List<CreateAppointmentDto> getUnassignedQueue() {
-        return visitRequestRepository.findByStatus(AppointmentStatus.UNASSIGNED).stream()
+        return appointmentRepository.findByStatus(AppointmentStatus.UNASSIGNED).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<CreateAppointmentDto> getAllQueue() {
-        return visitRequestRepository.findAll().stream()
+        return appointmentRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public void assignDoctor(AssignDoctorDTO assignDTO) {
-        Appointment visitRequest = visitRequestRepository.findById(assignDTO.getVisitRequestId())
+    public void assignDoctor(AssignAppointmentDTO assignDTO) {
+        Appointment appointment = appointmentRepository.findById(UUID.fromString(assignDTO.getDepartment()))
                 .orElseThrow(() -> new RuntimeException("Visit request not found"));
 
         User doctor = userRepository.findById(assignDTO.getDoctorId())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        visitRequest.setAssignedDoctor(doctor);
-        visitRequest.setStatus(AppointmentStatus.ASSIGNED);
+        appointment.setDoctorId(doctor.getId());
+        appointment.setStatus(AppointmentStatus.ASSIGNED);
 
-        visitRequestRepository.save(visitRequest);
+        appointmentRepository.save(appointment);
 
         // Send notification to doctor
         notificationService.sendNotification(
                 doctor.getId(),
-                "New patient assigned: " + visitRequest.getPatient().getName(),
+                "New patient assigned: " + appointment.getPatientId(),
                 NotificationType.GENERAL
         );
     }
 
     public List<CreateAppointmentDto> getDelayedAppointments() {
-        return visitRequestRepository.findDelayedAppointments(LocalDateTime.now()).stream()
+        return appointmentRepository.findDelayedAppointments(LocalDateTime.now()).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     private CreateAppointmentDto convertToDTO(Appointment visit) {
         CreateAppointmentDto dto = new CreateAppointmentDto();
-        dto.setDepartmentName(visit.getDepartment().getName());
+        dto.setDepartmentName(visit.getDepartment());
         dto.setReason(visit.getReason());
         dto.setPreferredDate(visit.getAppointmentDate().toString());
-        dto.setPatientId(String.valueOf(visit.getPatient().getId()));
+        dto.setPatientId(String.valueOf(visit.getPatientId())); // keep UUID, not String
         return dto;
     }
-
-
 }

@@ -1,111 +1,79 @@
-# HealthLink
+# HealthLink Backend
 
-A Spring Boot application with PostgreSQL database running on Docker.
+A Spring Boot application for managing healthcare appointments, inventory, and financial records.
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Java 24 (as specified in pom.xml)
-- Maven
+- Java 24 or higher
+- Maven 3.6 or higher
+- Docker and Docker Compose (for database)
 
 ## Quick Start
 
-### Option 1: Using Spring Boot with Docker Compose (Recommended)
-
-The application is configured to automatically start the PostgreSQL database using Docker Compose when you run the Spring Boot application.
+### 1. Start the Database
 
 ```bash
-# Start the application (this will automatically start PostgreSQL)
-./mvnw spring-boot:run
+docker-compose up -d
 ```
 
-Your app will be available at: http://localhost:8081
+This will start a PostgreSQL database with the following credentials:
+- Database: healthlink
+- Username: healthlink_user
+- Password: healthlink123
+- Port: 5432
 
-### Option 2: Manual Docker Compose
-
-If you prefer to manage the database separately:
+### 2. Run the Application
 
 ```bash
-# Start only the PostgreSQL database
-docker-compose up postgres -d
-
-# Start the Spring Boot application
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
-### Option 3: Start Everything with Docker Compose First
+The application will start on port 8081.
 
-```bash
-# Start PostgreSQL database
-docker-compose up postgres -d
+### 3. Test the Application
 
-# Wait a few seconds for the database to be ready, then start the app
-./mvnw spring-boot:run
-```
+Visit: http://localhost:8081/api/test/health
 
-## Database Configuration
+You should see: "HealthLink Backend is running successfully!"
 
-- **Host**: localhost
-- **Port**: 5432
-- **Database**: healthlink
-- **Username**: healthlink_user
-- **Password**: healthlink123
+## API Endpoints
 
-## Docker Services
+- `GET /api/test/health` - Health check endpoint
+- Additional endpoints will be available as controllers are implemented
 
-- **PostgreSQL 15**: Running on port 5432 with persistent data storage
-- **Health checks**: Configured to ensure database is ready before accepting connections
+## Database Schema
 
-## Useful Commands
+The application uses JPA entities with the following main tables:
+- users - Base user information
+- patients - Patient-specific data
+- doctors - Doctor information
+- appointments - Patient appointments
+- medical_inventory - Medical supplies and medications
+- payments - Payment records
+- transactions - Financial transactions
+- wallets - Patient wallet balances
+- notifications - System notifications
 
-```bash
-# View running containers
-docker ps
+## Configuration
 
-# View logs
-docker-compose logs postgres
-
-# Stop all services
-docker-compose down
-
-# Stop and remove volumes (WARNING: This will delete all data)
-docker-compose down -v
-
-# Restart PostgreSQL
-docker-compose restart postgres
-```
+The application is configured to:
+- Use PostgreSQL as the database
+- Auto-create database schema on startup
+- Run on port 8081
+- Use UUIDs for entity IDs
+- Include JPA auditing for created/updated timestamps
 
 ## Development
 
-The application is configured with:
-- **Flyway migrations** for database schema management
-- JPA/Hibernate with schema validation (Flyway handles schema changes)
-- Connection pooling with HikariCP
-- SQL logging enabled for development
-- UUID extension for PostgreSQL
-
-### Flyway Migrations
-
-Database schema changes are managed through Flyway migrations located in `src/main/resources/db/migration/`:
-
-- **V1__Create_initial_schema.sql**: Creates the initial database schema with users, profiles, health_records, and appointments tables
-- All migrations run automatically when the application starts
-- Migrations are version-controlled and run in order
-- Never modify existing migration files - create new ones for changes
-
-### Adding New Migrations
-
-To add a new database migration:
-
-1. Create a new file in `src/main/resources/db/migration/`
-2. Use the naming convention: `V{version}__{description}.sql`
-3. Example: `V2__Add_user_roles.sql`
-4. Restart the application to run the migration
+- The application uses Spring Boot 3.5.5
+- JPA/Hibernate for data persistence
+- Spring Security for basic security configuration
+- Lombok for reducing boilerplate code
+- Flyway migrations (currently disabled for development)
 
 ## Troubleshooting
 
-If you encounter connection issues:
-1. Ensure Docker is running
-2. Check if PostgreSQL container is healthy: `docker-compose ps`
-3. Verify the database is accessible: `docker-compose logs postgres`
-4. Check if port 5432 is available on your system 
+1. **Database Connection Issues**: Ensure PostgreSQL is running and accessible on port 5432
+2. **Port Conflicts**: Change the server port in `application.properties` if 8081 is already in use
+3. **Java Version**: Ensure you're using Java 24 or higher
+4. **Maven Issues**: Try `mvn clean install` before running the application 
