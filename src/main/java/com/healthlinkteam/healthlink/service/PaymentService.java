@@ -51,6 +51,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
         payment.setStatus(PaymentStatus.COMPLETED);
+        payment.setPaidDate(java.time.LocalDateTime.now());
         paymentRepository.save(payment);
     }
 
