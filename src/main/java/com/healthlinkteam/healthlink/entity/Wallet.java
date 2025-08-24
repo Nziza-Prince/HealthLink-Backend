@@ -12,16 +12,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Wallet entity to manage patient financial information and transactions.
- */
 @Entity
 @Table(name = "wallets")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class Wallet {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -67,4 +63,4 @@ public class Wallet {
         }
         return false;
     }
-} 
+}

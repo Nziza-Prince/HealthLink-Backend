@@ -1,39 +1,37 @@
 package com.healthlinkteam.healthlink.controller;
 
-import com.healthlinkteam.healthlink.dto.LoginDto;
+import com.healthlinkteam.healthlink.dto.LoginDoctor;
 import com.healthlinkteam.healthlink.dto.LoginResponseDto;
+import com.healthlinkteam.healthlink.dto.RegisterDoctor;
 import com.healthlinkteam.healthlink.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * REST Controller for authentication operations.
- * Handles login for patients, doctors, and managers.
- */
 @RestController
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@RequestMapping("/api/doctor/v1/auth")
 public class AuthController {
-
     private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * User login endpoint (for all user types)
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDoctor loginDto) {
         return authService.login(loginDto);
     }
 
     /**
      * Patient signup endpoint
      */
-    @PostMapping("/patient/signup")
-    public ResponseEntity<?> patientSignup(@Valid @RequestBody com.healthlinkteam.healthlink.dto.PatientSignupDto signupDto) {
-        return authService.patientSignup(signupDto);
+    @PostMapping("/doctor/signup")
+    public ResponseEntity<?> doctorSignup(@Valid @RequestBody RegisterDoctor signupDto) {
+        return authService.doctorSignup(signupDto);
     }
 
     /**
@@ -51,4 +49,4 @@ public class AuthController {
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         return authService.logout(token);
     }
-} 
+}

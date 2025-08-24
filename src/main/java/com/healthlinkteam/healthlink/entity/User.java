@@ -11,18 +11,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Base User entity that serves as the foundation for all user types in the system.
- * This entity contains common fields that all users (Patient, Doctor, Manager) share.
- */
 @Entity
 @Table(name = "users")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -64,4 +59,4 @@ public abstract class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-} 
+}

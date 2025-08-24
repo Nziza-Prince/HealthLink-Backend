@@ -1,9 +1,5 @@
 package com.healthlinkteam.healthlink.enums;
 
-/**
- * Enumeration for appointment statuses in the Health Sync system.
- * Tracks the current state of patient appointments.
- */
 public enum AppointmentStatus {
     SCHEDULED,      // Appointment is scheduled but not yet started
     IN_QUEUE,       // Patient is in the queue waiting
@@ -12,4 +8,4 @@ public enum AppointmentStatus {
     CANCELLED,      // Appointment was cancelled
     NO_SHOW,        // Patient didn't show up
     REFERRED        // Patient was referred to another doctor
-} 
+}

@@ -11,15 +11,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Appointment entity to manage patient appointments and visits.
- */
 @Entity
 @Table(name = "appointments")
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Appointment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -65,6 +61,10 @@ public class Appointment {
     @Column(name = "notes")
     private String notes;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_referred_id")
+    private Doctor referedDoctor;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -83,4 +83,4 @@ public class Appointment {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-} 
+}

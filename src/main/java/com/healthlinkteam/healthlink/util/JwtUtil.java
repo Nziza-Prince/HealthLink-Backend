@@ -13,13 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Utility class for JWT token operations.
- * Handles token generation, validation, and extraction.
- */
 @Component
 public class JwtUtil {
-
     @Value("${jwt.secret:defaultSecretKey}")
     private String secret;
 
@@ -94,4 +89,4 @@ public class JwtUtil {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
-} 
+}

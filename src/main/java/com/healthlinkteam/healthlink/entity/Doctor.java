@@ -1,22 +1,18 @@
 package com.healthlinkteam.healthlink.entity;
 
+import com.healthlinkteam.healthlink.entity.embedded.ResetToken;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
-/**
- * Doctor entity that extends the base User class.
- * Contains doctor-specific information and department assignments.
- */
 @Entity
 @Table(name = "doctors")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Doctor extends User {
-
+public class Doctor extends User{
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -53,4 +49,4 @@ public class Doctor extends User {
     public String getFullName() {
         return firstName + " " + lastName;
     }
-} 
+}

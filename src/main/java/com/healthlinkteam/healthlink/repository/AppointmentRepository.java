@@ -1,19 +1,15 @@
 package com.healthlinkteam.healthlink.repository;
 
 import com.healthlinkteam.healthlink.entity.Appointment;
+import com.healthlinkteam.healthlink.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Repository interface for Appointment entity.
- * Provides data access methods for appointment operations.
- */
-@Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
-
     /**
      * Find appointments by patient ID, ordered by appointment date descending
      */
@@ -22,7 +18,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     /**
      * Find appointments by doctor ID
      */
-    List<Appointment> findByDoctorId(UUID doctorId);
+    @Query("SELECT a FROM Appointment a ORDER BY a.createdAt DESC LIMIT 3")
+    List<Appointment> findByDoctorIdByThree(UUID doctorId);
 
     /**
      * Find appointments by department ID
@@ -33,4 +30,31 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
      * Find appointments by hospital ID
      */
     List<Appointment> findByHospitalId(UUID hospitalId);
-} 
+
+    // Filter by doctor + serviceDate
+    List<Appointment> findByDoctorIdAndServiceDateOrderByServiceDateAsc(Long doctorId, LocalDate serviceDate);
+
+    // Search (by name or description)
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId " +
+            "AND (LOWER(a.patient.firstName || a.patient.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(a.reason) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    List<Appointment> searchPatients(Long doctorId, String keyword);
+
+    long countByDoctorIdAndServiceDate(UUID doctorId, LocalDate serviceDate);
+
+    List<Appointment> findAppointmentByDoctorEmailAndStatus(String email, AppointmentStatus status);
+
+    long countAppointmentByStatusAndDoctorEmail(AppointmentStatus status, String email);
+
+    long countAppointmentByStatusAndDoctorEmailAndServiceDate(AppointmentStatus status, String email, LocalDate serviceDate);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.email = :email AND a.status = :status HAVING COUNT(*) = 1")
+    long countUniqueAppointmentByDoctorEmailAndStatus(String email,  AppointmentStatus status);
+
+    List<Appointment> findAppointmentByStatusAndDoctorEmail(AppointmentStatus status, String email);
+
+    List<Appointment> findAppointmentByReferedDoctorEmailAndStatus(AppointmentStatus status, String email);
+
+
+
+}

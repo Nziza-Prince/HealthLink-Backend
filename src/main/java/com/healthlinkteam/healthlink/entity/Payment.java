@@ -1,7 +1,7 @@
 package com.healthlinkteam.healthlink.entity;
 
-import com.healthlinkteam.healthlink.enums.PaymentStatus;
 import com.healthlinkteam.healthlink.enums.PaymentMethod;
+import com.healthlinkteam.healthlink.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,9 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Payment entity to manage patient payments and financial transactions.
- */
 @Entity
 @Table(name = "payments")
 @Data
@@ -77,4 +74,4 @@ public class Payment {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-} 
+}

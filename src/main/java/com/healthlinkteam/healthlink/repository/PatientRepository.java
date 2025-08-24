@@ -6,21 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Repository interface for Patient entity.
- * Provides data access methods for patient operations.
- */
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
-
     /**
      * Find patient by email
      */
     @Query("SELECT p FROM Patient p WHERE p.email = :email")
-    Optional<Patient> findByEmail(@Param("email") String email);
+    Optional<Patient> findByEmail(@ Param("email") String email);
 
     /**
      * Check if patient exists by email
@@ -33,4 +29,6 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
      */
     @Query("SELECT p FROM Patient p WHERE p.phoneNumber = :phoneNumber")
     Optional<Patient> findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
-} 
+
+    List<Patient> findByDoctorIdOrderByServiceDateAsc(UUID doctorId);
+}

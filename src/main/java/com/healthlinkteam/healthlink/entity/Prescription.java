@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Prescription entity to manage patient prescriptions and medications.
- */
 @Entity
 @Table(name = "prescriptions")
 @Data
@@ -82,4 +79,4 @@ public class Prescription {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-} 
+}
