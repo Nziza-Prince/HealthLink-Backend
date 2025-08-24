@@ -6,6 +6,7 @@ import com.healthlinkteam.healthlink.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@AuthenticationPrincipal User user) {
+    public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = authService.getUserByUsername(userDetails.getUsername());
         authService.logout(user);
         return ResponseEntity.ok("Logged out successfully");
     }

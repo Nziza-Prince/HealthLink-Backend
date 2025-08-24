@@ -68,7 +68,11 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        User user = (User) authentication.getPrincipal();
+        // Get the email from the authenticated principal and fetch the actual User entity
+        String email = authentication.getName();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found after authentication"));
+        
         String accessToken = jwtUtils.generateAccessToken(user.getEmail());
 
         RefreshToken refreshToken = createRefreshToken(user);
@@ -102,5 +106,10 @@ public class AuthService {
         token.setToken(UUID.randomUUID().toString());
         token.setExpiryDate(Instant.now().plusMillis(refreshExpirationMs));
         return refreshTokenRepository.save(token);
+    }
+
+    public User getUserByUsername(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }
 }
