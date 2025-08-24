@@ -41,8 +41,8 @@ public class QueueService {
     }
 
     public void assignDoctor(AssignAppointmentDTO assignDTO) {
-        Appointment appointment = appointmentRepository.findById(UUID.fromString(assignDTO.getDepartment()))
-                .orElseThrow(() -> new RuntimeException("Visit request not found"));
+        Appointment appointment = appointmentRepository.findById(assignDTO.getAppointmentId())
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
         User doctor = userRepository.findById(assignDTO.getDoctorId())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
@@ -52,13 +52,20 @@ public class QueueService {
 
         appointmentRepository.save(appointment);
 
+        // Fetch patient name
+        User patient = userRepository.findById(appointment.getPatientId())
+                .orElse(null);
+
+        String patientName = (patient != null) ? patient.getFirstName() + patient.getLastName() : "Unknown Patient";
+
         // Send notification to doctor
         notificationService.sendNotification(
                 doctor.getId(),
-                "New patient assigned: " + appointment.getPatientId(),
+                "New patient assigned: " + patientName,
                 NotificationType.GENERAL
         );
     }
+
 
     public List<CreateAppointmentDto> getDelayedAppointments() {
         return appointmentRepository.findDelayedAppointments(LocalDateTime.now()).stream()

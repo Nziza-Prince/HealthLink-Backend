@@ -10,8 +10,9 @@ import java.util.UUID;
  */
 @Data
 public class AssignAppointmentDTO {
+    private UUID appointmentId;   // <-- add this
     private UUID doctorId;
-    private LocalDateTime appointmentDate;
     private String department;
-    private String description; // manager-provided description for notification
+    private String description;
+    private LocalDateTime appointmentDate;
 }
