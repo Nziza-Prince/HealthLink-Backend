@@ -1,52 +1,46 @@
 package com.healthlinkteam.healthlink.controller;
 
-import com.healthlinkteam.healthlink.dto.LoginDoctor;
-import com.healthlinkteam.healthlink.dto.LoginResponseDto;
-import com.healthlinkteam.healthlink.dto.RegisterDoctor;
+import com.healthlinkteam.healthlink.dto.*;
+import com.healthlinkteam.healthlink.entity.User;
 import com.healthlinkteam.healthlink.service.AuthService;
-import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "*")
-@RequestMapping("/api/doctor/v1/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
-    private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/patient/signup")
+    public ResponseEntity<User> patientSignup(@RequestBody PatientSignup request) {
+        User patient = authService.patientSignup(request);
+        return ResponseEntity.ok(patient);
     }
 
-    /**
-     * User login endpoint (for all user types)
-     */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDoctor loginDto) {
-        return authService.login(loginDto);
+    public ResponseEntity<AuthResponse> login(@RequestBody PatientLogin request) {
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Patient signup endpoint
-     */
-    @PostMapping("/doctor/signup")
-    public ResponseEntity<?> doctorSignup(@Valid @RequestBody RegisterDoctor signupDto) {
-        return authService.doctorSignup(signupDto);
-    }
-
-    /**
-     * Refresh token endpoint
-     */
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
-        return authService.refreshToken(refreshToken);
+    public ResponseEntity<AuthResponse> refresh(@RequestBody TokenRefresh request) {
+        AuthResponse response = authService.refreshToken(request);
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Logout endpoint
-     */
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        return authService.logout(token);
+    public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = authService.getUserByUsername(userDetails.getUsername());
+        authService.logout(user);
+        return ResponseEntity.ok("Logged out successfully");
     }
 }

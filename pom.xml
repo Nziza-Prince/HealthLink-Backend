@@ -96,7 +96,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+			<version>10.20.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+			<version>10.20.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
@@ -117,6 +123,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<<<<<<< HEAD
+=======
+
+		<!-- JWT dependencies -->
+>>>>>>> origin/backend-gloria
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
