@@ -9,11 +9,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Hospital entity to manage hospital information and departments.
+ */
 @Entity
 @Table(name = "hospitals")
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Hospital {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -52,4 +56,3 @@ public class Hospital {
         updatedAt = LocalDateTime.now();
     }
 }
-

@@ -4,7 +4,6 @@ import com.healthlinkteam.healthlink.dto.*;
 import com.healthlinkteam.healthlink.entity.Patient;
 import com.healthlinkteam.healthlink.entity.RefreshToken;
 import com.healthlinkteam.healthlink.entity.User;
-import com.healthlinkteam.healthlink.exception.BadRequestException;
 import com.healthlinkteam.healthlink.repository.RefreshTokenRepository;
 import com.healthlinkteam.healthlink.repository.UserRepository;
 import com.healthlinkteam.healthlink.security.JwtUtils; // See below

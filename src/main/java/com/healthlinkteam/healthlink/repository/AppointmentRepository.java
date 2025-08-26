@@ -4,11 +4,15 @@ import com.healthlinkteam.healthlink.entity.Appointment;
 import com.healthlinkteam.healthlink.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+import java.rmi.server.UID;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
     /**
      * Find appointments by patient ID, ordered by appointment date descending
@@ -42,7 +46,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     long countByDoctorIdAndServiceDate(UUID doctorId, LocalDate serviceDate);
 
-    List<Appointment> findAppointmentByDoctorEmailAndStatus(String email, AppointmentStatus status);
+    List<Appointment> findAppointmentByDoctorIdAndStatus(UUID email, AppointmentStatus status);
 
     long countAppointmentByStatusAndDoctorEmail(AppointmentStatus status, String email);
 
@@ -55,6 +59,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     List<Appointment> findAppointmentByReferedDoctorEmailAndStatus(AppointmentStatus status, String email);
 
-
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate < :now AND a.status != 'COMPLETED'")
+    List<Appointment> findDelayedAppointments(LocalDateTime now);
 
 }

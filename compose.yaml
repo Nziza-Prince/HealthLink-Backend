@@ -4,8 +4,8 @@ services:
     container_name: healthlink-postgres
     environment:
       - 'POSTGRES_DB=healthlink'
-      - 'POSTGRES_PASSWORD=healthlink123'
-      - 'POSTGRES_USER=healthlink_user'
+      - 'POSTGRES_PASSWORD=12345'
+      - 'POSTGRES_USER=postgres'
     ports:
       - '5433:5432'
     volumes:
