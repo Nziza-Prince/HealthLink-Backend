@@ -46,8 +46,8 @@ public class NotificationService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-        if (appointment.getDoctorId() != null) {
-            sendNotification(appointment.getDoctorId(), description, NotificationType.GENERAL);
+        if (appointment.getDoctor().getId() != null) {
+            sendNotification(appointment.getDoctor().getId(), description, NotificationType.GENERAL);
         }
 
         // Also send to managers
@@ -84,7 +84,7 @@ public class NotificationService {
         List<Appointment> delayedAppointments = appointmentRepository.findDelayedAppointments(LocalDateTime.now());
         for (Appointment appointment : delayedAppointments) {
             sendSystemNotification(
-                    "Delayed appointment: Patient " + appointment.getPatientId()+
+                    "Delayed appointment: Patient " + appointment.getPatient().getId()+
                             " scheduled for " + appointment.getAppointmentDate(),
                     NotificationType.DELAYED_APPOINTMENT
             );

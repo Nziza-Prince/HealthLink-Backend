@@ -31,7 +31,7 @@ public class StaffService {
         doctor.setDepartment(dto.getDepartment());
         doctor.setRole(dto.getRole());
         doctor.setIsAvailable(dto.getIsAvailable());
-        doctor.setPasswordHash(new BCryptPasswordEncoder().encode(dto.getPasswordHash()));
+        doctor.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         return repo.save(doctor);
 
     }
@@ -41,17 +41,15 @@ public class StaffService {
         cur.setFirstName(d.getFirstName());
         cur.setLastName(d.getLastName());
         cur.setRole(d.getRole());
-        cur.setJoinedDate(d.getJoinedDate());
         cur.setEmail(d.getEmail());
         cur.setDepartment(d.getDepartment());
-        cur.setEndDate(d.getEndDate());
         cur.setIsAvailable(d.getIsAvailable());
         return repo.save(cur);
     }
 
     public void deactivate(UUID id) {
         Doctor cur = get(id);
-        cur.setIsActive(false);
+        cur.setIsAvailable(false);
         repo.save(cur);
     }
 }

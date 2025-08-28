@@ -3,6 +3,8 @@ package com.healthlinkteam.healthlink.entity;
 import com.healthlinkteam.healthlink.enums.StockStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,7 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "medical_inventory")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MedicalInventory {
@@ -40,22 +43,13 @@ public class MedicalInventory {
 
     private LocalDateTime lastRestocked;
 
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-        updateStockStatus();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-        updateStockStatus();
-    }
 
     public void updateStockStatus() {
         if (stockQuantity == null || stockQuantity == 0) {

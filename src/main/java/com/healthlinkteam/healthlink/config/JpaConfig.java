@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = "com.healthlinkteam.healthlink.repository")
 public class JpaConfig {
     // JPA configuration is handled by Spring Boot auto-configuration
     // This class enables additional JPA features like auditing

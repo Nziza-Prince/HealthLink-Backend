@@ -1,9 +1,9 @@
 package com.healthlinkteam.healthlink.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -16,7 +16,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "transactions")
-@Data
+@Setter
+@Getter
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class Transaction {
@@ -50,7 +51,11 @@ public class Transaction {
     @Column(name = "status", nullable = false)
     private String status; // COMPLETED, FAILED
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

@@ -2,7 +2,10 @@ package com.healthlinkteam.healthlink.controller;
 
 import com.healthlinkteam.healthlink.dto.SendNotificationDTO;
 import com.healthlinkteam.healthlink.entity.Notification;
+import com.healthlinkteam.healthlink.repository.ManagerRepository;
 import com.healthlinkteam.healthlink.service.NotificationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +17,12 @@ import java.util.UUID;
 @RequestMapping("/api/notifications")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
+@Tag(name = "Notifications")
+@SecurityRequirement(name = "bearerAuth")
 public class NotificationsController {
 
     private final NotificationService notificationService;
+    private final ManagerRepository managerRepository;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable UUID userId) {

@@ -14,24 +14,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class ManagerService {
+    private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final MedicalInventoryRepository inventoryRepository;
+    private final PaymentRepository paymentRepository;
+    private final NotificationRepository notificationRepository;
+    private final MedicationRepository medicationRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private MedicalInventoryRepository inventoryRepository;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private MedicationRepository medicationRepository;
+    public ManagerService(UserRepository userRepository, AppointmentRepository appointmentRepository, MedicalInventoryRepository inventoryRepository, PaymentRepository paymentRepository, NotificationRepository notificationRepository, MedicationRepository medicationRepository) {
+        this.userRepository = userRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.inventoryRepository = inventoryRepository;
+        this.paymentRepository = paymentRepository;
+        this.notificationRepository = notificationRepository;
+        this.medicationRepository = medicationRepository;
+    }
 
     // Overview Statistics
     public OverviewStatsDTO getOverviewStats() {
@@ -54,7 +51,7 @@ public class ManagerService {
     public QueueStatsDTO getQueueStats() {
         QueueStatsDTO stats = new QueueStatsDTO();
         stats.setTotalVisitRequests(appointmentRepository.countTotalAppointments()); // ✅ fixed
-        stats.setAvailableDoctors((long) userRepository.findByRoleAndIsActiveTrue(UserRole.DOCTOR).size());
+        stats.setAvailableDoctors((long) userRepository.findByRoleAndIsActiveTrue(UserRole.DOCTOR, true).size());
         stats.setTotalMedicalInventory((long) inventoryRepository.findAll().size());
         stats.setTotalFacilities(10L);
         return stats;

@@ -1,9 +1,6 @@
 package com.healthlinkteam.healthlink.service;
 
-import com.healthlinkteam.healthlink.dto.PatientOverviewDto;
-import com.healthlinkteam.healthlink.dto.PatientSignupDto;
-import com.healthlinkteam.healthlink.dto.WalletDto;
-import com.healthlinkteam.healthlink.dto.PatientProfileDto;
+import com.healthlinkteam.healthlink.dto.*;
 import com.healthlinkteam.healthlink.entity.*;
 import com.healthlinkteam.healthlink.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +35,7 @@ public class PatientServiceImpl implements PatientService {
     private final PaymentRepository paymentRepository;
     private final TransactionRepository transactionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     public ResponseEntity<?> signup(PatientSignupDto signupDto) {
@@ -59,7 +57,7 @@ public class PatientServiceImpl implements PatientService {
             patient.setEmail(signupDto.getEmail());
             patient.setCountryOfResidence(signupDto.getCountryOfResidence());
             patient.setPhoneNumber(signupDto.getPhoneNumber());
-            patient.setPasswordHash(passwordEncoder.encode(signupDto.getPassword()));
+            patient.setPassword(passwordEncoder.encode(signupDto.getPassword()));
 
             // Save patient (this will save both User and Patient records due to JOINED inheritance)
             Patient savedPatient = patientRepository.save(patient);
@@ -195,6 +193,11 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
+    public List<Department> getDepartments() {
+        var departments = departmentRepository.findAll();
+        return departments;
+    }
+
     @Override
     public ResponseEntity<?> topUpWallet(UUID patientId, String amount, String paymentMethod) {
         try {
@@ -211,7 +214,7 @@ public class PatientServiceImpl implements PatientService {
             Payment payment = new Payment();
             payment.setPatient(wallet.getPatient());
             payment.setAmount(topUpAmount);
-            payment.setPaymentMethod(com.healthlinkteam.healthlink.enums.PaymentMethod.valueOf(paymentMethod));
+            payment.setPaymentMethod(paymentMethod);
             payment.setStatus(com.healthlinkteam.healthlink.enums.PaymentStatus.COMPLETED);
             payment.setDescription("Wallet top-up");
             payment.setPaidDate(LocalDateTime.now());
@@ -309,13 +312,8 @@ public class PatientServiceImpl implements PatientService {
         dto.setDateOfBirth(patient.getDateOfBirth());
         dto.setGender(patient.getGender());
         dto.setAddress(patient.getAddress());
-        dto.setEmergencyContactName(patient.getEmergencyContactName());
-        dto.setEmergencyContactPhone(patient.getEmergencyContactPhone());
         dto.setPhoneNumber(patient.getPhoneNumber());
         dto.setCountryOfResidence(patient.getCountryOfResidence());
-        dto.setActive(patient.getIsActive());
-        dto.setCreatedAt(patient.getCreatedAt());
-        dto.setUpdatedAt(patient.getUpdatedAt());
         
         // Add wallet info if available
         Optional<Wallet> walletOpt = walletRepository.findByPatientId(patient.getId());

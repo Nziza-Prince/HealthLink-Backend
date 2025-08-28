@@ -12,6 +12,14 @@ import java.util.UUID;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, UUID> {
 
+    // Total revenue (if revenue means payments with positive amounts)
+    @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.amount > 0")
+    Double getTotalRevenue();
+
+    // Total expenses (if negative amounts)
+    @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.amount < 0")
+    Double getTotalExpenses();
+
     /**
      * Find payments by patient ID, ordered by creation date descending
      */
@@ -36,6 +44,10 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     @Query("SELECT sum(p.amount) FROM Payment p WHERE p.appointment.doctor.email = :email")
     long countAmountByDoctorEmail(String email);
 
-    @Query("SELECT sum(p.amount) FROM Payment p WHERE p.appointment.doctor.email = :email GROUP BY DATE_TRUNC('month', p.dueDate) ORDER BY month")
+    @Query("SELECT sum(p.amount) FROM Payment p WHERE p.appointment.doctor.email = :email GROUP BY DATE_TRUNC('month', p.dueDate) ORDER BY 'month'")
     List<Long> findAmountPerMonthByDoctorEmail(String email);
+
+    // Overdue payments (assuming status = PENDING and dueDate < now)
+    @Query("SELECT p FROM Payment p WHERE p.status = 'PENDING' AND p.dueDate < CURRENT_TIMESTAMP")
+    List<Payment> findOverduePayments();
 }

@@ -31,8 +31,8 @@ public class QueueService {
         this.notificationService = notificationService;
     }
 
-    public List<CreateAppointmentDto> getUnassignedQueue(UUID doctorId) {
-        return appointmentRepository.findAppointmentByDoctorIdAndStatus(doctorId, AppointmentStatus.SCHEDULED).stream()
+    public List<CreateAppointmentDto> getUnassignedQueue() {
+        return appointmentRepository.findAppointmentByStatus(AppointmentStatus.SCHEDULED).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -78,7 +78,7 @@ public class QueueService {
 
     private CreateAppointmentDto convertToDTO(Appointment visit) {
         CreateAppointmentDto dto = new CreateAppointmentDto();
-        dto.setDepartmentName(visit.getDepartment().getName());
+        dto.setDepartmentName(visit.getDoctor().getDepartment().getName());
         dto.setReason(visit.getReason());
         dto.setPreferredDate(visit.getAppointmentDate().toString());
         dto.setPatientId(String.valueOf(visit.getPatient().getId())); // keep UUID, not String

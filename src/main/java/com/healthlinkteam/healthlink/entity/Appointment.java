@@ -2,9 +2,10 @@ package com.healthlinkteam.healthlink.entity;
 
 import com.healthlinkteam.healthlink.enums.AppointmentStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
@@ -13,7 +14,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "appointments")
-@Data
+@Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Appointment {
     @Id
@@ -27,14 +29,6 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospital;
 
     @Column(name = "reason", nullable = false)
     private String reason;
@@ -65,22 +59,11 @@ public class Appointment {
     @JoinColumn(name = "doctor_referred_id")
     private Doctor referedDoctor;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }

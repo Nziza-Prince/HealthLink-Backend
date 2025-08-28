@@ -3,12 +3,16 @@ package com.healthlinkteam.healthlink.entity;
 import com.healthlinkteam.healthlink.enums.MedicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "medications")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Medication {
@@ -31,10 +35,12 @@ public class Medication {
     @Enumerated(EnumType.STRING)
     private MedicationStatus status = MedicationStatus.PRESCRIBED;
 
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
 }

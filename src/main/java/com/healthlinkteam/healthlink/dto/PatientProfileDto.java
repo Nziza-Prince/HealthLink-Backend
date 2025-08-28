@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -12,11 +13,9 @@ public class PatientProfileDto {
     private String email;
     private String firstName;
     private String lastName;
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
     private String gender;
     private String address;
-    private String emergencyContactName;
-    private String emergencyContactPhone;
     private String phoneNumber;
     private String countryOfResidence;
     private boolean isActive;

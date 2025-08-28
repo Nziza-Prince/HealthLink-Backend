@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: 'postgres:14-alpine'
+    image: 'postgres:15-alpine'
     container_name: healthlink-postgres
     environment:
       - 'POSTGRES_DB=healthlink'
@@ -11,7 +11,7 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U healthlink_user -d healthlink" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d healthlink" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -28,8 +28,8 @@ public class PaymentService {
 
     public PaymentDTO createPayment(CreatePaymentDTO createDTO) {
         Payment payment = new Payment();
-        payment.setPatientId(createDTO.getPatientId());
-        payment.setAppointmentId(createDTO.getAppointmentId());
+        payment.getPatient().setId(createDTO.getPatientId());
+        payment.getAppointment().setId(createDTO.getAppointmentId());
         payment.setAmount(createDTO.getAmount());
         payment.setPaymentMethod(createDTO.getPaymentMethod());
         payment.setPhoneNumber(createDTO.getPhoneNumber());
@@ -68,8 +68,8 @@ public class PaymentService {
     private PaymentDTO convertToDTO(Payment payment) {
         PaymentDTO dto = new PaymentDTO();
         dto.setId(payment.getId());
-        dto.setPatientId(payment.getPatientId());
-        dto.setAppointmentId(payment.getAppointmentId());
+        dto.setPatientId(payment.getPatient().getId());
+        dto.setAppointmentId(payment.getAppointment().getId());
         dto.setAmount(payment.getAmount());
         dto.setPaymentMethod(payment.getPaymentMethod());
         dto.setStatus(payment.getStatus());

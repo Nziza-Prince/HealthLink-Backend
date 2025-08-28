@@ -1,17 +1,15 @@
 package com.healthlinkteam.healthlink.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * Data Transfer Object for patient signup requests.
- * Contains all required fields for patient registration.
- */
 @Data
-public class PatientSignupDto {
-
+public class DoctorSignupDto {
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName;
@@ -46,4 +44,16 @@ public class PatientSignupDto {
 
     @NotBlank(message = "Password is required")
     private String gender;
-} 
+
+    @NotBlank(message = "License number is required")
+    private String licenseNumber;
+
+    @NotBlank(message = "Specialization is required")
+    private String specialization;
+
+    @NotBlank(message = "Department is required")
+    private String departmentName;
+
+    @NotBlank(message = "Hospital name is required")
+    private String hospitalName;
+}

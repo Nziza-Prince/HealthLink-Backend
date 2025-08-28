@@ -2,8 +2,10 @@ package com.healthlinkteam.healthlink.service;
 
 import com.healthlinkteam.healthlink.dto.PatientOverviewDto;
 import com.healthlinkteam.healthlink.dto.PatientSignupDto;
+import com.healthlinkteam.healthlink.entity.Department;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -66,4 +68,6 @@ public interface PatientService {
      * Update patient profile information
      */
     ResponseEntity<?> updatePatientProfile(UUID patientId, PatientSignupDto profileDto);
+
+    List<Department> getDepartments();
 } 
