@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         servers = {
                 @Server(
                         description = "Local Env",
-                        url = "http://localhost:8081"
+                        url = "https://healthlink-backend-6z8y.onrender.com"
                 )
         }
 )
